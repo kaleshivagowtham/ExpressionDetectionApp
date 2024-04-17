@@ -1,0 +1,37 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.ExpressionDetectionWholeCont {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.ExpressionDetectionTitle {
+  font-size: 3rem;
+  /* color: #ffffff; */
+}
+
+.ExpressionDetectionVideoCont {
+  position: relative;
+  width: 900px;
+  height: 640px;
+  /* border: 1px solid green; */
+}
+
+.ExpressionDetectionVideo {
+  width: 900px;
+  height: 640px;
+  /* border: 1px solid green; */
+}
+
+.ExpressionDetectionCanvasCont {
+  position: absolute;
+  left: 0;
+  width: 900px;
+  height: 640px;
+  z-index: 10;
+}
