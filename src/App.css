@@ -5,12 +5,13 @@
   /* margin: 0 auto; */
   /* padding: 2rem; */
   text-align: center;
+  background-color: #171717;
 }
 
 .ExpressionDetectionWholeCont {
   width: 100%;
   min-height: 100vh;
-  background-color: #ffffff;
+  background-color: #171717;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
@@ -24,7 +25,7 @@
   position: relative;
   width: 900px;
   height: 540px;
-  border: 2px solid black;
+  border: 2px solid #ffffff;
   overflow: hidden;
   margin-left: 1vh;
   border-radius: 25px;
@@ -61,6 +62,6 @@
 
 .ExpressionShowEach {
   font-size: 20px;
-  color: #000000;
+  color: #ffffff;
 
 }
