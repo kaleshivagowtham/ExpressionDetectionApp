@@ -1,24 +1,63 @@
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, useMemo } from 'react'
 import * as faceapi from "face-api.js";
 // import * as canvas from 'canvas';
 import './App.css'
+import axios from 'axios';
 
 function App() {
 
   const videoRef = useRef();
   const canvasRef= useRef();
+  const nameRef= useRef();
 
   const [output, setOutput] = useState({angry:0, happy:0, fearful:0, disgusted: 0, sad: 0, neutral: 0, surprised:0});
+  const [avg, setAvg] = useState({angry:0, happy:0, fearful:0, disgusted: 0, sad: 0, neutral: 0, surprised:0});
+  const [count, setCount] = useState(1);
+  const [name, setName] = useState('');
 
-  console.log(output);
+  // console.log(output);
 
   useEffect(() => {
+
+    nameRef.current.focus();
     startVideo();
 
     videoRef && loadModals()
 
   })
 
+  useMemo(async () => {
+    const temp = avg;
+    setCount(count+1);
+    // await new Promise.all ( () => {
+      // console.log(count);
+      temp.angry = parseInt((temp?.angry*count + output?.angry) / count);
+      temp.happy = parseInt((temp?.happy*count + output?.happy) / count);
+      temp.fearful = parseInt((temp?.fearful*count + output?.fearful) / count);
+      temp.disgusted = parseInt((temp?.disgusted*count + output?.disgusted) / count);
+      temp.sad = parseInt((temp?.sad*count + output?.sad) / count);
+      temp.neutral = parseInt((temp?.neutral*count + output?.neutral) / count);
+      temp.surprised = parseInt((temp?.surprised*count + output?.surprised) / count);
+    // })
+    console.log("AVG: ",avg);
+    setAvg(temp)
+  },[output])
+
+  useEffect(() => {
+    setTimeout(() => {
+      axios.post( 'https://localhost:5000/expressionData', {
+        data : avg,
+        name
+      })
+      .then(() => {
+        alert("Data saved")
+      })
+      .catch(() => {
+        alert("Sorry for the inquinans, mongodb is under maintenance")
+      })
+    },120000)
+  },[])
+    
   const startVideo = () => {
     navigator.mediaDevices.getUserMedia({video: true})
     .then((currentStream) => {
@@ -45,7 +84,7 @@ function App() {
   }
 
   const faceMyDetect = async () => {
-    console.log("CALLED FaceMyDetect")
+    // console.log("CALLED FaceMyDetect")
     setInterval(async () => {
       const detections = await faceapi.detectAllFaces(videoRef.current,
         new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions()
@@ -58,8 +97,9 @@ function App() {
       })
 
       try {
-          if(detections[0])
+          if(detections[0]){
             setOutput(detections[0]['expressions']);
+          }
       }
       catch (err) {
         console.log(err.message)
@@ -85,6 +125,9 @@ function App() {
         <canvas ref={canvasRef} width='900' height='640' className='ExpressionDetectionCanvasCont' />
       </div>
       <div className="ExpressionShowCont">
+        <input className='nameInput' onChange={e => setName(e.target.value)} 
+            ref={nameRef}
+        />
         <p className='ExpressionShowEach'>Neutral   : {parseInt(output?.neutral * 100)}%</p>
         <p className='ExpressionShowEach'>Happy     : {parseInt(output?.happy * 100)}%</p>
         <p className='ExpressionShowEach'>Angry     : {parseInt(output?.angry * 100)}%</p>
@@ -92,6 +135,8 @@ function App() {
         <p className='ExpressionShowEach'>Sad       : {parseInt(output?.sad * 100)}%</p>
         <p className='ExpressionShowEach'>Fearful   : {parseInt(output?.fearful * 100)}%</p>
         <p className='ExpressionShowEach'>Disgusted : {parseInt(output?.disgusted * 100)}%</p>
+        <br />
+        {/* <p className='ExpressionShowEach'>Average : {parseInt(output?.disgusted * 100)}%</p> */}
       </div>
     </div>
   )

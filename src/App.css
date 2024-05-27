@@ -65,3 +65,11 @@
   color: #ffffff;
 
 }
+
+.nameInput {
+  width: 40vh;
+  height: 6vh;
+  /* text-indent: 1vh; */
+  border: none;
+  font-size: 2rem;
+}
