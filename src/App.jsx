@@ -48,7 +48,7 @@ function App() {
     const ex = setInterval(() => {
       
       sendAVG();
-    },10000)
+    },120000)
 
     return () => clearInterval(ex)
   },[])
