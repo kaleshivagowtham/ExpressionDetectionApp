@@ -42,9 +42,20 @@ function App() {
     // console.log("AVG: ",avg);
   },[output])
 
-  useEffect(() => {
-    setInterval(() => {
-      axios.post( 'http://localhost:8000/expressions/postExpressions' , 
+  // console.log("Name2: ", name, avg);
+
+  useMemo(() => {
+    const ex = setInterval(() => {
+      
+      sendAVG();
+    },10000)
+
+    return () => clearInterval(ex)
+  },[])
+
+  const sendAVG = () => {
+    console.log("Name: ", name, avg);
+    axios.post( 'http://localhost:8000/expressions/postExpressions' , 
         {
           avg,
           name
@@ -61,8 +72,7 @@ function App() {
           alert("Sorry for the inquinans, mongodb is under maintenance")
           console.log(err)
         })
-    },120000)
-  },[])
+  }
   
   const startVideo = () => {
     navigator.mediaDevices.getUserMedia({video: true})
@@ -98,8 +108,8 @@ function App() {
       canvasRef.current.innerHtml = faceapi.createCanvasFromMedia(videoRef.current)
 
       faceapi.matchDimensions(canvasRef.current, {
-        width: 900,
-        height : 640
+        width: '900px',
+        height : '640px'
       })
 
       try {
@@ -112,8 +122,8 @@ function App() {
       }
 
       const resized = faceapi.resizeResults(detections, {
-        width:900,
-        height:640
+        width:'900px',
+        height:'640px'
       })
 
       faceapi.draw.drawDetections(canvasRef.current, resized)
@@ -128,7 +138,7 @@ function App() {
       {/* <h1 className='ExpressionDetectionTitle'>Expression detection</h1> */}
       <div className="ExpressionDetectionVideoCont">
         <video className='ExpressionDetectionVideo' crossOrigin='anonymous' ref={videoRef} autoPlay />
-        <canvas ref={canvasRef} width='900' height='640' className='ExpressionDetectionCanvasCont' />
+        <canvas ref={canvasRef} width='900px' height='640px' className='ExpressionDetectionCanvasCont' />
       </div>
       <div className="ExpressionShowCont" >
         <input className='nameInput' onChange={e => setName(e.target.value)} 
