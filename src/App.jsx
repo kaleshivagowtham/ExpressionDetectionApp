@@ -39,16 +39,12 @@ function App() {
     .then(() => {
       setAvg(temp)
     })
-    // console.log("AVG: ",avg);
   },[output])
-
-  // console.log("Name2: ", name, avg);
 
   useMemo(() => {
     const ex = setInterval(() => {
-      
       sendAVG();
-    },120000)
+    },30000)
 
     return () => clearInterval(ex)
   },[])
