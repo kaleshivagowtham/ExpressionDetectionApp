@@ -15,8 +15,6 @@ function App() {
   const [count, setCount] = useState(1);
   const [name, setName] = useState('');
 
-  // console.log(output);
-
   useEffect(() => {
 
     nameRef.current.focus();
@@ -44,20 +42,47 @@ function App() {
   },[output])
 
   useEffect(() => {
-    setTimeout(() => {
-      axios.post( 'https://localhost:5000/expressionData', {
-        data : avg,
-        name
-      })
-      .then(() => {
-        alert("Data saved")
-      })
-      .catch(() => {
-        alert("Sorry for the inquinans, mongodb is under maintenance")
-      })
+    setInterval(() => {
+      axios.post( 'http://localhost:8000/expressions/postExpressions' , 
+        {
+          avg,
+          name
+        },
+        {
+          headers:{
+            "x-api-key":1234567890123456
+          }
+        })
+        .then(() => {
+          alert("Data saved")
+        })
+        .catch(err => {
+          alert("Sorry for the inquinans, mongodb is under maintenance")
+          console.log(err)
+        })
     },120000)
   },[])
-    
+
+  // const testFun = () => {
+  //   axios.post( 'http://localhost:8000/expressions/postExpressions' , 
+  //     {
+  //       avg : avg,
+  //       name
+  //     },
+  //     {
+  //       headers:{
+  //         "x-api-key":1234567890123456
+  //       }
+  //     })
+  //     .then(() => {
+  //       alert("Data saved")
+  //     })
+  //     .catch(err => {
+  //       alert("Sorry for the inquinans, mongodb is under maintenance")
+  //       console.log(err)
+  //     })
+  // }
+  
   const startVideo = () => {
     navigator.mediaDevices.getUserMedia({video: true})
     .then((currentStream) => {
@@ -124,7 +149,7 @@ function App() {
         <video className='ExpressionDetectionVideo' crossOrigin='anonymous' ref={videoRef} autoPlay />
         <canvas ref={canvasRef} width='900' height='640' className='ExpressionDetectionCanvasCont' />
       </div>
-      <div className="ExpressionShowCont">
+      <div className="ExpressionShowCont" >
         <input className='nameInput' onChange={e => setName(e.target.value)} 
             ref={nameRef}
         />
