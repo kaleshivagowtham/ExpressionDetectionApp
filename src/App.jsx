@@ -27,18 +27,19 @@ function App() {
   useMemo(async () => {
     const temp = avg;
     setCount(count+1);
-    // await new Promise.all ( () => {
-      // console.log(count);
-      temp.angry = parseInt((temp?.angry*count + output?.angry) / count);
-      temp.happy = parseInt((temp?.happy*count + output?.happy) / count);
-      temp.fearful = parseInt((temp?.fearful*count + output?.fearful) / count);
-      temp.disgusted = parseInt((temp?.disgusted*count + output?.disgusted) / count);
-      temp.sad = parseInt((temp?.sad*count + output?.sad) / count);
-      temp.neutral = parseInt((temp?.neutral*count + output?.neutral) / count);
-      temp.surprised = parseInt((temp?.surprised*count + output?.surprised) / count);
-    // })
-    console.log("AVG: ",avg);
-    setAvg(temp)
+    await Promise.all([
+      temp.angry = parseInt((temp?.angry*count + output?.angry) / count),
+      temp.happy = parseInt((temp?.happy*count + output?.happy) / count),
+      temp.fearful = parseInt((temp?.fearful*count + output?.fearful) / count),
+      temp.disgusted = parseInt((temp?.disgusted*count + output?.disgusted) / count),
+      temp.sad = parseInt((temp?.sad*count + output?.sad) / count),
+      temp.neutral = parseInt((temp?.neutral*count + output?.neutral) / count),
+      temp.surprised = parseInt((temp?.surprised*count + output?.surprised) / count),
+    ])
+    .then(() => {
+      setAvg(temp)
+    })
+    // console.log("AVG: ",avg);
   },[output])
 
   useEffect(() => {
@@ -62,26 +63,6 @@ function App() {
         })
     },120000)
   },[])
-
-  // const testFun = () => {
-  //   axios.post( 'http://localhost:8000/expressions/postExpressions' , 
-  //     {
-  //       avg : avg,
-  //       name
-  //     },
-  //     {
-  //       headers:{
-  //         "x-api-key":1234567890123456
-  //       }
-  //     })
-  //     .then(() => {
-  //       alert("Data saved")
-  //     })
-  //     .catch(err => {
-  //       alert("Sorry for the inquinans, mongodb is under maintenance")
-  //       console.log(err)
-  //     })
-  // }
   
   const startVideo = () => {
     navigator.mediaDevices.getUserMedia({video: true})
@@ -117,8 +98,8 @@ function App() {
       canvasRef.current.innerHtml = faceapi.createCanvasFromMedia(videoRef.current)
 
       faceapi.matchDimensions(canvasRef.current, {
-        width: '900px',
-        height : '640px'
+        width: 900,
+        height : 640
       })
 
       try {
@@ -131,8 +112,8 @@ function App() {
       }
 
       const resized = faceapi.resizeResults(detections, {
-        width:'900px',
-        height:'640px'
+        width:900,
+        height:640
       })
 
       faceapi.draw.drawDetections(canvasRef.current, resized)
